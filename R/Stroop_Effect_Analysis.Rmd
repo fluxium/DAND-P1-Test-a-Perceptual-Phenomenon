@@ -1,0 +1,136 @@
+---
+title: "Stroop Effect Perceptual Phenomenon"
+author: "Mahlon Barrault"
+date: "December 4, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+## Stroop Task Study Parameters
+
+In a Stroop task the subject is asked to read two lists of colored words one after the other. The first list has names of colors printed in ink that matches the color name. This is the congruent list. In the second list the names of the colors do not match. This is the inconcruent list. In both cases the subject is asked to say the color of the ink the word is written in. The time it takes to read each list is recorded. This study follows the repeated measures design pattern.
+
+The independant variable is the list of words and the dependant variable is the time to read the list. The null hypothesis in this case would be that the mean time to read the congruent list minus the mean time to read the incongruent list would be 0 and an alternative hypothesis would be that the means are not equal. Symbolically my hypotheses are:
+
+$$H_0 : \mu_C = \mu_I$$
+$$H_a : \mu_C \neq \mu_I$$
+
+Where $\mu_C$ is the population mean of the congruent reading times and $\mu_I$ is the population mean of the incongruent reading times.
+
+To test these hypotheses it would be approprate to use a two-tailed t-test. Since we do not know the population parameters a t-test is the best fit. A two-tailed test is relevant in this case because we are only interested in if a subjects performance differs between the lists. We are not making any assumptions about the directionality of potential differences. For the t-test $\alpha = 0.05$ will be used. 
+
+## Analysis
+
+```{r}
+stroop <- read.csv("..\\data\\stroopdata.csv")
+
+# Count the rows in the data set
+n <- nrow(stroop)
+df <- n - 1
+# Calculate mean of reach column
+x_C <-  mean(stroop$Congruent)
+x_I <- mean(stroop$Incongruent)
+
+# Calculate standard diviation of each column
+s_C <- sd(stroop$Congruent)
+s_I <- sd(stroop$Incongruent)
+```
+
+The results are:
+
+$$\bar{x}_C = `r I(x_C)`$$
+$$s_C = `r I(s_C)`$$
+
+$$\bar{x}_I = `r I(x_I)`$$
+$$s_I = `r I(s_I)`$$
+
+```{r Plots, echo=FALSE}
+
+binwidth <- 5
+# 
+# nc <- as.data.frame(curve(dnorm(x, mean=X_I, sd=SD_I) * n * binwidth), from = 0, to = 40)
+# 
+# bl <- c(seq(0, 40, by=binwidth))
+# 
+# ggplot(stroop, aes(x=stroop$Congruent)) +
+#   geom_histogram(aes(y=..density..), breaks = bl) +
+#   stat_function(fun=dnorm, args=list(mean=X_C, sd=SD_C)) +
+#   geom_line(data = nc, aes(x = x, y = y))
+# #+ geom_curve(dnorm(x = x, mean=X_I, sd=SD_I))
+# 
+# ggplot(stroop, aes(x=stroop$Incongruent)) + geom_histogram(binwidth = binwidth) +
+#   stat_function(
+#     fun = function(x, mean, sd, n, bw){
+#       dnorm(x = x, mean = mean, sd = sd) * n * bw
+#     },
+#     args = c(mean = X_I, sd = SD_I, n = n, bw = binwidth))
+# 
+# qplot(stroop$Incongruent, geom = "histogram", breaks = c(seq(0, 40, by=binwidth)),
+#       colour = I("black"), fill = I("white"),
+#       xlab = "Incongruent List Reading Time", ylab = "Count") +
+#   # Create normal curve, adjusting for number of observations and binwidth
+#   stat_function(
+#     fun = function(x, mean, sd, n, bw){
+#       dnorm(x = x, mean = mean, sd = sd) * n * bw
+#     },
+#     args = c(mean = X_I, sd = SD_I, n = n, bw = binwidth))
+
+hist(stroop$Congruent, freq=FALSE, xlab='Congruent List Reading Time (Sec)', ylab = 'Density', main='Distribution of Congruent List Reading Times', col='orange', xlim=c(0,40),  ylim=c(0, 0.125), breaks = c(seq(0, 40, by=binwidth)), labels = c('0 - 5', '5 - 10', '10 - 15', '15 - 20', '20 - 25', '25 - 30', '30 - 35', '35 - 40'))
+curve(dnorm(x, mean=x_C, sd=s_C), add=TRUE, col='darkred', lwd=2)
+
+hist(stroop$Incongruent, freq=FALSE, xlab='Incongurent List Reading Time (Sec)', ylab = 'Density', main='Distribution of Incongruent List Reading Times', col='lightblue', xlim=c(0,40),  ylim=c(0, 0.125), breaks = c(seq(0, 40, by=binwidth)), labels = c('0 - 5', '5 - 10', '10 - 15', '15 - 20', '20 - 25', '25 - 30', '30 - 35', '35 - 40'))
+curve(dnorm(x, mean=x_I, sd=s_I), add=TRUE, col='darkblue', lwd=2)
+
+curve(dnorm(x, mean=x_I, sd=s_I), add=FALSE, col='darkblue', lwd=2, xlab = 'Reading Time (Sec)', ylab = 'Density', main = 'Comparison of Congruent and Incongruent Reading Time Distributions', xlim=c(0,40),  ylim=c(0, 0.125))
+curve(dnorm(x, mean=x_C, sd=s_C), add=TRUE, col='darkred', lwd=2)
+legend("topright", c('Congruent', 'Incongruent'), lty = c(1, 1), lwd=c(2.5,2.5),col=c('darkred', 'darkblue'), merge = TRUE, title = 'Distributions', inset = 0.05)
+
+```
+
+The preceeding statistics and plots show that there is some differences in the distribution of test results between the congruent and incongruent lists. In our sample there are a number of test times in the 5 - 10 second bin for the congurent list. The incongruent test times fall mostly in to the 10 - 15 and 15 - 20 second bins with no test times in the 5 - 10 second bin. The final plot shows the two distibutions side by side where we can clearly see the difference. The mean and standard diviation of the incongruent test times are both larger explaining the distibutions position on the x-axis and its slightly shorter and wider shape.
+
+Despite the clear numerical and visual differences, that alone is not enought to accept or reject $H_0$. Next we will conduct a t-test to determine the statistical significance of what we have observed so far.
+
+### Hypothsis Test
+
+```{r}
+# Setting 'paired = TRUE' the t.test function uses the difference between the means of the two input lists
+t = t.test(x = stroop$Congruent, y = stroop$Incongruent, var.equal = FALSE, paired = TRUE)
+```
+
+The results of the t-test were:
+$$t_\textrm{crit}(`r I(df)`) = \pm 2.069, \alpha = 0.05, two-tailed$$
+$$t(`r I(df)`) = `r I(t$statistic)`, p = `r I(t$p.value)`, two-tailed$$
+
+Confidence Interval on difference between the means:
+$$95\% CI = (`r t$conf.int[2]`, `r t$conf.int[1]`)$$
+
+From these results we can safely reject $H_0$. With the large absolute t-score and extremely low p-value we can say that the difference between these two distributions is not a result of random fluctuations. In terms of the experiment, we can now say that the differences between the reading times is not a result of natural variability, but a result of a change in our independant variable - the list of words.
+
+Since statistical significance is only part of the picture, next we will examine some effect size mesures.
+
+### Effect Size
+
+```{r}
+# Calculate r^2
+r.squared <- t$statistic^2 / (t$statistic^2 + df)
+
+# Calculate standard diviation of of the differences
+s <- sd(stroop$Congruent - stroop$Incongruent)
+
+# t-test calculated the mean difference already
+M_D <- t$estimate
+
+# Calculate d
+cohens.d <- M_D / s
+```
+$$r^2 = `r I(r.squared)`$$
+$$d = `r I(cohens.d)`$$
+
+The $r^2$ statistic is telling us that about 74% of the variance in reading times can be explained by the difference betweent the two lists. $d$ is telling us that the two distributions are offset and by about 1.6 standard diviations. From these effect size measures we can conclude that reading the incongruent list is a significantly more demanding task.
+
+## Conclusion
