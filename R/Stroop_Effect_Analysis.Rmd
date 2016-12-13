@@ -21,16 +21,19 @@ $$H_a : \mu_C \neq \mu_I$$
 
 Where $\mu_C$ is the population mean of the congruent reading times and $\mu_I$ is the population mean of the incongruent reading times.
 
-To test these hypotheses it would be approprate to use a two-tailed t-test. Since we do not know the population parameters a t-test is the best fit. A two-tailed test is relevant in this case because we are only interested in if a subjects performance differs between the lists. We are not making any assumptions about the directionality of potential differences. For the t-test $\alpha = 0.05$ will be used. 
+To test these hypotheses it would be approprate to use a two-tailed t-test. Since we do not know the population parameters a t-test is the best fit. A two-tailed test is relevant in this case because we are only interested in if a subjects performance differs between the lists. We are not making any assumptions about the directionality of potential differences. For the t-test $\alpha = 0.05$ will be used.
+
+Having particiated in a Stroop task myself, I am inclined to think that the statistics will show that reading the incongruent list is a much more congnitively demanding task.
 
 ## Analysis
 
 ```{r}
-stroop <- read.csv("..\\data\\stroopdata.csv")
+stroop <- read.csv("../data/stroopdata.csv")
 
 # Count the rows in the data set
 n <- nrow(stroop)
 df <- n - 1
+
 # Calculate mean of reach column
 x_C <-  mean(stroop$Congruent)
 x_I <- mean(stroop$Incongruent)
@@ -40,13 +43,15 @@ s_C <- sd(stroop$Congruent)
 s_I <- sd(stroop$Incongruent)
 ```
 
-The results are:
+The following is a summary of the statistics for the Stroop task observations in this sample:
 
 $$\bar{x}_C = `r I(x_C)`$$
 $$s_C = `r I(s_C)`$$
 
 $$\bar{x}_I = `r I(x_I)`$$
 $$s_I = `r I(s_I)`$$
+
+Where $\bar{x}_C$ is the mean of the congruent list reading times, $s_C$ is the standard diviation of the congruent list reading times, $\bar{x}_I$ is the mean of the incongruent list reading times, and $s_I$ is the standard diviation of the incongruent list reading times.
 
 ```{r Plots, echo=FALSE}
 
@@ -91,7 +96,9 @@ legend("topright", c('Congruent', 'Incongruent'), lty = c(1, 1), lwd=c(2.5,2.5),
 
 ```
 
-The preceeding statistics and plots show that there is some differences in the distribution of test results between the congruent and incongruent lists. In our sample there are a number of test times in the 5 - 10 second bin for the congurent list. The incongruent test times fall mostly in to the 10 - 15 and 15 - 20 second bins with no test times in the 5 - 10 second bin. The final plot shows the two distibutions side by side where we can clearly see the difference. The mean and standard diviation of the incongruent test times are both larger explaining the distibutions position on the x-axis and its slightly shorter and wider shape.
+The preceeding statistics and plots show that there is some differences in the distribution of test results between the congruent and incongruent lists. In our sample there are a number of test times in the 5 - 10 second bin for the congurent list. The incongruent test times fall mostly in to the 10 - 15 and 15 - 20 second bins with no test times in the 5 - 10 second bin. Additionally, in contrast to the congruent reading list observations, the incongruent reading times had observarions that fell in to the upper three bins. The final plot shows the two distibutions side by side where we can clearly see the difference. The mean and standard diviation of the incongruent test times are both larger explaining the distibution's position on the x-axis and its slightly shorter and wider shape.
+
+A normal distribution curve was plotted on top of the histograms for visual confirmation that these data appear to be normally distributed.
 
 Despite the clear numerical and visual differences, that alone is not enought to accept or reject $H_0$. Next we will conduct a t-test to determine the statistical significance of what we have observed so far.
 
@@ -131,6 +138,21 @@ cohens.d <- M_D / s
 $$r^2 = `r I(r.squared)`$$
 $$d = `r I(cohens.d)`$$
 
-The $r^2$ statistic is telling us that about 74% of the variance in reading times can be explained by the difference betweent the two lists. $d$ is telling us that the two distributions are offset and by about 1.6 standard diviations. From these effect size measures we can conclude that reading the incongruent list is a significantly more demanding task.
+The $r^2$ statistic is telling us that about 74% of the variance in reading times between the congruent list and the incongruent list can be explained by the difference between the two lists. $d$ is telling us that the two distributions are offset and by about 1.6 standard diviations.
 
 ## Conclusion
+
+During the analysis of the Stroop task sample there were several important findings. By comparing the means and standard diviations between the reading times of the congruent list and the incongruent list there was indication that an effect might be present. The data were plotted and this confirmed visually what was noticed by comparing the descriptive statistics of the sample. To confirm the differences were statistically significant a two-tailed t-test was used. The t-test indicated that there was a strong effect as a result of the change in the independant variable. $r^2$ and $d$ effect size measures were calculated to get a sense for the magnitude of the effect.
+
+Based on these findings it is clear that reading a list of color names printed in ink that is a different color from the printed name is a challenging congnitive task.
+
+As I was conducting this analysis I was curious if there was a variation of the Stroop task usings numbers rather than colored words. I thought the test could be conducted in a similar way. The subject would be asked to speak aloud how many digits were in each set. The congruent list could be composed of groups of the same number repeated that number of times.
+
+$$4444, 1, 333, 22$$
+The incongruent list would be groups of the same number repeated a different number of times.
+
+$$2222, 3, 444, 11$$
+
+I wondered if there was any validity to this idea so I did some research and found that a Stroop test involving numbers has been conducted but it was more so to study the effects of the size of the printed numbers in relation to each other. I was able to find a "Number Stroop" test online simular to the one I participated in for this project at https://faculty.washington.edu/chudler/java/readyn.html. This test used lists of the word forms of the numbers in incongruent counts. I was still curious if any study has been conducted to see if simular results to the Stroop effect show up when the test uses digits rather than letters.
+
+After some additional diging I found an abstract for a paper entitled "Numerical stroop effect." at https://www.ncbi.nlm.nih.gov/pubmed/15058867. This study seems to be very simular to the idea I had! It's good to know I was on the right track. I was hoping to read the paper to find out how they conducted their statistical analysis, but I was not able to obtain a copy. Google Scholar had some citations listed with additional links to the paper on the publisher's site but I could not find one that worked.
